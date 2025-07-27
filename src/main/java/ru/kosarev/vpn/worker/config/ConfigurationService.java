@@ -16,17 +16,33 @@ public class ConfigurationService {
     private final ConfigurationScriptClient configurationScriptClient;
 
     public File issueConfiguration(IssueConfigurationRequest request) {
-        Long userId = request.getUserId();
+        String userIdString = Long.toString(request.getUserId());
+        File configFile = configurationScriptClient.issueConfig(userIdString);
 
-        return configurationScriptClient.issueConfig(Long.toString(userId));
+        log.info("issueConfiguration -> configFilename: [{}]", configFile.getName());
+
+        return configFile;
     }
 
-    public LockConfigurationResponse lockConfiguration(LockConfigurationRequest request) {
-        return null;
+    public void lockConfigurations(LockConfigurationRequest request) {
+        String userIdString = Long.toString(request.getUserId());
+        configurationScriptClient.lockConfigs(userIdString);
+
+        log.info("lockConfiguration -> ");
     }
 
-    public UnlockConfigurationResponse unlockConfiguration(UnlockConfigurationRequest request) {
-        return null;
+    public void unlockConfigurations(UnlockConfigurationRequest request) {
+        String userIdString = Long.toString(request.getUserId());
+        configurationScriptClient.unlockConfigs(userIdString);
+
+        log.info("unlockConfiguration -> ");
+    }
+
+    public void removeConfigurations(RemoveConfigurationRequest request) {
+        String userIdString = Long.toString(request.getUserId());
+        configurationScriptClient.removeConfigs(userIdString);
+
+        log.info("removeConfigurations -> ");
     }
 
 }

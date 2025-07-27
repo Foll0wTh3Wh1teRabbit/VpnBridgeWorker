@@ -35,17 +35,24 @@ public class ConfigurationController {
     }
 
     @PostMapping(value = "/lock")
-    public LockConfigurationResponse lockConfiguration(@RequestBody LockConfigurationRequest request) {
+    public void lockConfiguration(@RequestBody LockConfigurationRequest request) {
         log.info("lockConfiguration <- request: {}", request);
 
-        return configurationService.lockConfiguration(request);
+        configurationService.lockConfigurations(request);
     }
 
     @PostMapping(value = "/unlock")
-    public UnlockConfigurationResponse unlockConfiguration(@RequestBody UnlockConfigurationRequest request) {
+    public void unlockConfiguration(@RequestBody UnlockConfigurationRequest request) {
         log.info("unlockConfiguration <- request: {}", request);
 
-        return configurationService.unlockConfiguration(request);
+        configurationService.unlockConfigurations(request);
+    }
+
+    @DeleteMapping(value = "/remove")
+    public void removeConfiguration(@RequestBody RemoveConfigurationRequest request) {
+        log.info("removeConfiguration <- request: {}", request);
+
+        configurationService.removeConfigurations(request);
     }
 
 }

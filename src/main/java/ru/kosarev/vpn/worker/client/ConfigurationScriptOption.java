@@ -7,9 +7,11 @@ public enum ConfigurationScriptOption {
 
     ISSUE_CONFIG(1),
 
-    LOCK_CONFIG(4),
+    LOCK_CONFIGS(4),
 
-    UNLOCK_CONFIG(5);
+    UNLOCK_CONFIGS(5),
+
+    REMOVE_CONFIGS(7);
 
     final Integer value;
 

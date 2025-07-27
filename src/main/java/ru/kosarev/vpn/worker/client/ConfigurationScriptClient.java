@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.UUID;
 import java.util.function.BinaryOperator;
 
-import static ru.kosarev.vpn.worker.client.ConfigurationScriptOption.ISSUE_CONFIG;
+import static ru.kosarev.vpn.worker.client.ConfigurationScriptOption.*;
 
 @Slf4j
 @Component
@@ -24,18 +24,53 @@ public class ConfigurationScriptClient {
 
     private static final String ISSUE_CONFIG_SCRIPT = "wireguard-install.sh";
 
+    private static final String WHITESPACE_DELIMITER = " ";
+
     public File issueConfig(String userId) {
         String configUuid = UUID.randomUUID().toString();
-        String shellString = String.join(" ",
-            ISSUE_CONFIG_SCRIPT, Integer.toString(ISSUE_CONFIG.getValue()), CONFIG_NAME_BUILDER.apply(userId, configUuid));
+        String shellString = String.join(
+            WHITESPACE_DELIMITER,
+            ISSUE_CONFIG_SCRIPT,
+            Integer.toString(ISSUE_CONFIG.getValue()),
+            CONFIG_NAME_BUILDER.apply(userId, configUuid)
+        );
 
         runScript(shellString);
 
-        File configFile = new File(CONFIG_PATH_BUILDER.apply(userId, configUuid));
+        return new File(CONFIG_PATH_BUILDER.apply(userId, configUuid));
+    }
 
-        log.info("IssueConfig -> configFilename: [{}]", configFile.getName());
+    public void lockConfigs(String userId) {
+        String shellString = String.join(
+            WHITESPACE_DELIMITER,
+            ISSUE_CONFIG_SCRIPT,
+            Integer.toString(LOCK_CONFIGS.getValue()),
+            userId
+        );
 
-        return configFile;
+        runScript(shellString);
+    }
+
+    public void unlockConfigs(String userId) {
+        String shellString = String.join(
+            WHITESPACE_DELIMITER,
+            ISSUE_CONFIG_SCRIPT,
+            Integer.toString(UNLOCK_CONFIGS.getValue()),
+            userId
+        );
+
+        runScript(shellString);
+    }
+
+    public void removeConfigs(String userId) {
+        String shellString = String.join(
+            WHITESPACE_DELIMITER,
+            ISSUE_CONFIG_SCRIPT,
+            Integer.toString(REMOVE_CONFIGS.getValue()),
+            userId
+        );
+
+        runScript(shellString);
     }
 
     private void runScript(String shellString) {

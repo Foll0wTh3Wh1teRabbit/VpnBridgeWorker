@@ -15,14 +15,10 @@ public class ConfigurationService {
 
     private final ConfigurationScriptClient configurationScriptClient;
 
-    public IssueConfigurationResponse issueConfiguration(IssueConfigurationRequest request) {
+    public File issueConfiguration(IssueConfigurationRequest request) {
         Long userId = request.getUserId();
 
-        File file = configurationScriptClient.issueConfig(Long.toString(userId));
-
-        return IssueConfigurationResponse.builder()
-            .file(file)
-            .build();
+        return configurationScriptClient.issueConfig(Long.toString(userId));
     }
 
     public LockConfigurationResponse lockConfiguration(LockConfigurationRequest request) {

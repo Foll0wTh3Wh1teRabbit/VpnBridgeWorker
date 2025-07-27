@@ -2,25 +2,36 @@ package ru.kosarev.vpn.worker.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 import ru.kosarev.vpn.worker.data.*;
 
+import java.io.File;
+
 @Slf4j
-@RestController(value = "/configuration")
+@RestController
+@RequestMapping("/configuration")
 @RequiredArgsConstructor
 public class ConfigurationController {
 
     private final ConfigurationService configurationService;
 
-    @PutMapping(value = "/issue", produces = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public IssueConfigurationResponse issueConfiguration(@RequestBody IssueConfigurationRequest request) {
+    @PutMapping(value = "/issue")
+    public ResponseEntity<Resource> issueConfiguration(@RequestBody IssueConfigurationRequest request) {
         log.info("issueConfiguration <- request: {}", request);
 
-        return configurationService.issueConfiguration(request);
+        File file = configurationService.issueConfiguration(request);
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+            .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + file.getName() + "\"")
+            .contentLength(file.length())
+            .contentType(MediaType.APPLICATION_OCTET_STREAM)
+            .body(resource);
     }
 
     @PostMapping(value = "/lock")
